@@ -1,0 +1,19 @@
+<div class="main_head"><div><strong>{$main_name[$HM]}</strong></div></div>
+<div class="main_body">
+<!--{php $tags=tag("table=news&condition=status=3 and username='$username'&pagesize=".$main_num[$HM]."&order=addtime desc&template=null", -2);}-->
+	<table cellpadding="2" cellspacing="1" width="100%" align="center">
+	{if $tags}
+	{loop $tags $t}
+	<tr>
+	<td class="px13" height="25">&middot;<a href="{userurl($username, 'file=news&itemid='.$t[itemid], $domain)}">{$t[title]}</a></td>
+	<td align="center" width="80" class="f_gray px11">{timetodate($t[addtime], 3)}</td>
+	</tr>
+	{/loop}
+	{else}
+	<tr>
+	<td>暂无新闻</td>
+	</tr>
+	{/if}
+	</table>
+</ul>
+</div>

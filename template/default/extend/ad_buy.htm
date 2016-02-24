@@ -1,0 +1,229 @@
+{template 'header'}
+{load('admin.js')}
+<style type="text/css">
+#Dtop {border-right:#CCCCCC 3px solid;border-bottom:#CCCCCC 3px solid;}
+#Dtop .dbody {border:#333333 1px solid;padding:1px;background:#EBF0F6;}
+#Dtop .dhead {background:#6980DA url('{SKIN_PATH}member/close.gif') no-repeat right 4px;padding:0 0 0 0;letter-spacing:1px;border-bottom:#333333 1px solid;color:#FFFFFF;line-height:20px;font-weight:bold;}
+#Dtop .dhead span {float:right;cursor:pointer;display:block;width:22px;height:19px;text-align:right;}
+#Dtop .dbox {padding:8px;line-height:200%;}
+</style>
+<div class="m">
+	<table cellpadding="0" cellspacing="0" width="100%">
+	<tr>
+	<td valign="top" class="left_menu">
+		<ul>
+		<li><a href="{DT_PATH}">网站首页</a></li>
+		<li id="type_0"><a href="./">广告中心</a></li>
+		{loop $TYPE $k $v}
+		{if $k}<li id="type_{$k}"><a href="{rewrite('index.php?typeid='.$k)}">{$v}</a></li>{/if}
+		{/loop}
+		</ul>
+	</td>
+	<td width="8"> </td>
+	<td valign="top">
+		<div class="left_box">		
+			<div class="pos">当前位置: <a href="{DT_PATH}">首页</a> &raquo; <a href="./">广告中心</a> &raquo; 广告预定</div>
+			<div class="b15">&nbsp;</div>
+			<form method="post" action="index.php" id="dform" onsubmit="return check();">
+			<input type="hidden" name="action" value="{$action}"/>
+			<input type="hidden" name="pid" value="{$pid}"/>
+			<input type="hidden" name="price" value="{$p[price]}" id="price"/>
+			<table cellpadding="6" cellspacing="1" width="96%" align="center" bgcolor="#E3EEF5">
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC" width="130">&nbsp; 广告位名称：</td>
+			<td>{$p[name]}</td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 广告位类型：</td>
+			<td>{$TYPE[$typeid]}</td>
+			</tr>
+			{if $p[introduce]}
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 广告位介绍：</td>
+			<td>{$p[introduce]}</td>
+			</tr>
+			{/if}
+			{if $p[width] && $p[height]}
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 广告位大小：</td>
+			<td>{$p[width]}px X {$p[height]}px</td>
+			</tr>
+			{/if}
+			{if $typeid == 1}
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 广告代码 <span class="f_red">*</span></td>
+			<td><textarea name="post[code]" id="code" style="width:98%;height:50px;overflow:visible;font-family:Fixedsys,verdana;"></textarea></td>
+			</tr>
+			{elseif $typeid == 2}
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 链接文字 <span class="f_red">*</span></td>
+			<td class="f_gray"><input type="text" size="30" name="post[text_name]" id="text_name"/></td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 链接地址 <span class="f_red">*</span></td>
+			<td><input type="text" size="60" name="post[text_url]" id="text_url" value="http://"/> <span id="dtext_url" class="f_red"></span></td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; Title提示</td>
+			<td><input type="text" size="60" name="post[text_title]"/></td>
+			</tr>
+			{elseif $typeid == 3}
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 图片地址： <span class="f_red">*</span></td>
+			<td class="f_gray"><input type="text" size="60" name="post[image_src]" id="thumb"/>&nbsp;&nbsp;<span onclick="Dthumb({$moduleid},{$p[width]},{$p[height]}, $('thumb').value,true);" class="jt">[上传]</span>&nbsp;&nbsp;<span onclick="_preview($('thumb').value);" class="jt">[预览]</span>&nbsp;&nbsp;<span onclick="$('thumb').value='';" class="jt">[删除]</span> <span id="dthumb" class="f_red"></span></td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 链接地址：</td>
+			<td><input type="text" size="60" name="post[image_url]" id="image_url" value="http://"/> <span id="dimage_url" class="f_red"></span></td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; Alt提示：</td>
+			<td><input type="text" size="60" name="post[image_alt]"/></td>
+			</tr>			
+			{elseif $typeid == 4}
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; Flash地址 <span class="f_red">*</span></td>
+			<td class="f_gray"><input type="text" size="60" name="post[flash_src]" id="flash"/></td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 链接地址</td>
+			<td><input type="text" size="60" name="post[flash_url]" value="http://"/></td>
+			</tr>
+			{elseif $typeid == 6}
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 图片地址： <span class="f_red">*</span></td>
+			<td class="f_gray"><input type="text" size="60" name="post[image_src]" id="thumb"/>&nbsp;&nbsp;<span onclick="Dthumb({$moduleid},{$p[width]},{$p[height]}, $('thumb').value,true);" class="jt">[上传]</span>&nbsp;&nbsp;<span onclick="_preview($('thumb').value);" class="jt">[预览]</span>&nbsp;&nbsp;<span onclick="$('thumb').value='';" class="jt">[删除]</span> <span id="dthumb" class="f_red"></span></td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 链接地址：<span class="f_red">*</span></td>
+			<td><input type="text" size="60" name="post[image_url]" id="image_url" value="http://"/> <span id="dimage_url" class="f_red"></span></td>
+			</tr>
+			{/if}
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 广告价格：</td>
+			<td><span class="f_red f_b">{$p[price]} {$unit}/月</span></td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 开始投放日期：<span class="f_red">*</span></td>
+			<td>{dcalendar('post[fromtime]', $fromdate)}&nbsp;<span id="dpostfromtime" class="f_red"></span></td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 购买时长：<span class="f_red">*</span></td>
+			<td>
+			<select name="month" id="month" onchange="CA();">
+			{loop $months $m}
+			<option value="{$m}">{$m}月</option>
+			{/loop}
+			</select>
+			</td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 应付总价：</td>
+			<td class="f_red f_b" id="payment">{$p[price]}{$unit}</td>
+			</tr>
+			{if $currency == 'money'}
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 资金余额：</td>
+			<td><span class="f_blue f_b">{$_money}{$unit}</span> <a href="{$MODULE[2][linkurl]}charge.php?action=pay" target="_blank">[充值]</a></td>
+			</tr>
+			{else}<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 积分余额：</td>
+			<td><span class="f_blue f_b">{$_credit}{$unit}</span> <a href="{$MODULE[2][linkurl]}trade.php?action=credit" target="_blank">[购买]</a></td>
+			</tr>
+			{/if}
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 支付密码：<span class="f_red">*</span></td>
+			<td>{template 'password', 'chip'}</td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp; 备注事项：</td>
+			<td><input type="text" size="60" name="post[note]"/></td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+			<td bgcolor="#F1F7FC">&nbsp;  </td>
+			<td><input type="submit" name="submit" value="确定购买"/></td>
+			</tr>
+			</table>
+			</form>
+			<div class="b15">&nbsp;</div>
+		</div>
+	</td>
+	</tr>
+	</table>
+</div>
+{load('clear.js')}
+<script type="text/javascript">
+function CA() {
+	$('payment').innerHTML = $('price').value*$('month').value + '{$unit}';
+}
+function check() {
+	var p = $('price').value;
+	{if $currency == 'money'}
+	if(p*$('month').value > {$_money}) {
+		alert('帐户余额不足，请先充值');
+		return false;
+	}
+	{else}
+	if(p*$('month').value > {$_credit}) {
+		alert('您的积分不足，请先购买');
+		return false;
+	}
+	{/if}
+{if $typeid == 1}
+	if($('code').value.length < 10) {
+		alert('请填写广告代码');
+		$('code').focus();
+		return false;
+	}
+{elseif $typeid == 2}
+	if($('text_name').value.length < 2) {
+		alert('请填写链接文字');
+		$('text_name').focus();
+		return false;
+	}
+	if($('text_url').value.length < 10) {
+		alert('请填写链接地址');
+		$('text_url').focus();
+		return false;
+	}
+{elseif $typeid == 3}
+	if($('thumb').value.length < 15) {
+		alert('请填写图片地址或上传图片');
+		$('thumb').focus();
+		return false;
+	}
+{elseif $typeid == 4}
+	if($('flash').value.length < 15) {
+		alert('请填写Flash地址');
+		$('flash').focus();
+		return false;
+	}
+{elseif $typeid == 6}
+	if($('thumb').value.length < 15) {
+		alert('请填写图片地址或上传图片');
+		$('thumb').focus();
+		return false;
+	}
+	if($('image_url').value.length < 10) {
+		alert('请填写链接地址');
+		$('image_url').focus();
+		return false;
+	}
+{/if}
+	if($('postfromtime').value.replace(/-/g, '') < '{$fromdate}'.replace(/-/g, '')) {
+		alert('开始投放日期需从{$fromdate}开始');
+		$('postfromtime').value = '{$fromdate}';
+		$('postfromtime').focus();
+		return false;
+	}
+	if($('password').value.length < 6) {
+		alert('请填写支付密码');
+		$('password').focus();
+		return false;
+	}
+}
+</script>
+<script type="text/javascript">
+try {$('type_{$typeid}').style.backgroundColor = '#CDDCE4';}catch (e){}
+</script>
+{template 'footer'}
